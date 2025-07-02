@@ -579,8 +579,24 @@ const backToMenuOption = {
 const userSessions = {};
 
 // Message handling logic
-async function handleMessage(phoneNumber, messageText, buttonId = null) {
+async function handleMessage(input) {
   const userId = phoneNumber;
+
+  const {
+    userId,
+    phoneNumber,
+    messageText,
+    buttonId,
+    normalizedKey: responseKey,
+  } = input;
+
+  // Helper to ensure correct WhatsApp API message format
+  function formatTextMessage(text) {
+    return {
+      type: "text",
+      text: { body: text },
+    };
+  }
 
   // Initialize user session
   if (!userSessions[userId]) {
@@ -620,12 +636,7 @@ async function handleMessage(phoneNumber, messageText, buttonId = null) {
     }
   }
 
-  console.log("🔍 Handling input:", {
-    phoneNumber,
-    messageText,
-    buttonId,
-    normalizedKey: responseKey,
-  });
+  console.log("Handling input:", input);
 
   // Handle different response types
   try {
@@ -648,49 +659,81 @@ async function handleMessage(phoneNumber, messageText, buttonId = null) {
         break;
 
       case "spa_treatments":
-        await sendWhatsAppMessage(userId, detailedResponses.spa_treatments);
-        setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
+        {
+          const response = detailedResponses.spa_treatments;
+          await sendWhatsAppMessage(
+            userId,
+            typeof response === "string"
+              ? formatTextMessage(response)
+              : response
+          );
+          setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
+        }
         break;
 
       case "book_spa":
-        await sendWhatsAppMessage(userId, {
-          type: "text",
-          text: `🌸 *Ready to book your spa session?*\n\nVisit our spa booking page:\n🔗 https://graecare.com/grae-care-spa/\n\nOr call us directly at 📞 0712 345 678\n\nWe'll help you choose the perfect treatment for your needs! 💚`,
-        });
+        await sendWhatsAppMessage(
+          userId,
+          formatTextMessage(
+            "🌸 *Ready to book your spa session?*\n\nVisit our spa booking page:\n🔗 https://graecare.com/grae-care-spa/\n\nOr call us directly at 📞 0712 345 678\n\nWe'll help you choose the perfect treatment for your needs! 💚"
+          )
+        );
         setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
         break;
 
       case "contact_spa":
-        await sendWhatsAppMessage(userId, {
-          type: "text",
-          text: `📞 *Contact GraeCare Spa*\n\nFor any spa-related inquiries, please call us at:\n📞 0712 345 678\n\nWe're here to help you with bookings, treatments, and any questions you may have! 💚`,
-        });
+        await sendWhatsAppMessage(
+          userId,
+          formatTextMessage(
+            "📞 *Contact GraeCare Spa*\n\nFor any spa-related inquiries, please call us at:\n📞 0712 345 678\n\nWe're here to help you with bookings, treatments, and any questions you may have! 💚"
+          )
+        );
         setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
         break;
 
       case "contact_info":
-        await sendWhatsAppMessage(userId, detailedResponses.contact_info);
+        {
+          const response = detailedResponses.contact_info;
+          await sendWhatsAppMessage(
+            userId,
+            typeof response === "string"
+              ? formatTextMessage(response)
+              : response
+          );
+        }
         setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
         break;
 
       case "order_info":
-        await sendWhatsAppMessage(userId, detailedResponses.order_info);
+        {
+          const response = detailedResponses.order_info;
+          await sendWhatsAppMessage(
+            userId,
+            typeof response === "string"
+              ? formatTextMessage(response)
+              : response
+          );
+        }
         setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
         break;
 
       case "supplement_products":
-        await sendWhatsAppMessage(userId, {
-          type: "text",
-          text: `💊 *Natural Supplements*\n\nExplore our range of carefully curated supplements:\n\n🔗 https://graecare.com/shop/\n\n*Popular supplements include:*\n• Sea Moss - for energy and skin health\n• Ashwagandha - for stress and hormones\n• Magnesium - for cramps and sleep\n• Red Clover - for reproductive health\n\nAll natural, organic, and GMO-free! 🌿`,
-        });
+        await sendWhatsAppMessage(
+          userId,
+          formatTextMessage(
+            "💊 *Natural Supplements*\n\nExplore our range of carefully curated supplements:\n\n🔗 https://graecare.com/shop/\n\n*Popular supplements include:*\n• Sea Moss - for energy and skin health\n• Ashwagandha - for stress and hormones\n• Magnesium - for cramps and sleep\n• Red Clover - for reproductive health\n\nAll natural, organic, and GMO-free! 🌿"
+          )
+        );
         setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
         break;
 
       case "specialized_kits":
-        await sendWhatsAppMessage(userId, {
-          type: "text",
-          text: `📦 *Specialized Health Kits*\n\n*PCOS Support Kits:*\n• Insulin Resistance PCOS Kit - KShs 8,400\n• Adrenal PCOS Kit - KShs 6,100\n• Inflammatory PCOS Kit - KShs 6,750\n\n*Other Kits:*\n• Yeast Infection Bundle - KShs 4,200\n\nEach kit is specially formulated for targeted support 🎯\n\n🔗 Browse all: https://graecare.com/shop/`,
-        });
+        await sendWhatsAppMessage(
+          userId,
+          formatTextMessage(
+            `📦 *Specialized Health Kits*\n\n*PCOS Support Kits:*\n• Insulin Resistance PCOS Kit - KShs 8,400\n• Adrenal PCOS Kit - KShs 6,100\n• Inflammatory PCOS Kit - KShs 6,750\n\n*Other Kits:*\n• Yeast Infection Bundle - KShs 4,200\n\nEach kit is specially formulated for targeted support 🎯\n\n🔗 Browse all: https://graecare.com/shop/`
+          )
+        );
         setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
         break;
 
@@ -707,35 +750,34 @@ async function handleMessage(phoneNumber, messageText, buttonId = null) {
           userSessions[userId].preferredTopics.push(responseKey);
         }
 
+      default:
         if (detailedResponses[responseKey]) {
-          await sendWhatsAppMessage(userId, detailedResponses[responseKey]);
-          setTimeout(() => {
-            sendWhatsAppMessage(userId, backToMenuOption).catch(console.error);
-          }, 2000);
+          const response = detailedResponses[responseKey];
+          await sendWhatsAppMessage(
+            userId,
+            typeof response === "string"
+              ? formatTextMessage(response)
+              : response
+          );
+          setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 2000);
         } else {
-          console.warn(`⚠️ Missing detailed response for key: ${responseKey}`);
-          await sendWhatsAppMessage(userId, {
-            type: "text",
-            text: `Oops, I'm still learning about *${responseKey}*. Please try another option or type *menu*.`,
-          });
+          await sendWhatsAppMessage(
+            userId,
+            formatTextMessage(
+              "Sorry, I didn't understand that. Please try again or type 'menu' to return to the main menu."
+            )
+          );
         }
         break;
-
-      default:
-        await sendWhatsAppMessage(userId, {
-          type: "text",
-          text: `🤖 Sorry, I didn't understand that. Please choose an option from the menu or type *menu* to begin.`,
-        });
-        setTimeout(() => {
-          sendWhatsAppMessage(userId, backToMenuOption).catch(console.error);
-        }, 1000);
     }
-  } catch (error) {
-    console.error("❌ Error in handleMessage:", error);
-    await sendWhatsAppMessage(userId, {
-      type: "text",
-      text: "Oops! Something went wrong. Please try again later 🌿",
-    });
+  } catch (err) {
+    console.error("Error handling message:", err);
+    await sendWhatsAppMessage(
+      userId,
+      formatTextMessage(
+        "Sorry, there was an error processing your request. Please try again later."
+      )
+    );
   }
 }
 
