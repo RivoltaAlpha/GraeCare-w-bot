@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node whatsapp.js",
+    "start": "node index.js",
     "build": "tsc"
   },
   "keywords": [],
