@@ -610,9 +610,9 @@ async function handleMessage(input) {
   userSessions[userId].lastInteraction = Date.now();
 
   // Determine response based on button ID or message text
-  let responseKey = buttonId
-    ? buttonId.toLowerCase().replace(/[-\s]/g, "_")
-    : null;
+  if (buttonId) {
+    responseKey = buttonId.toLowerCase().replace(/[-\s]/g, "_");
+  }
 
   if (!responseKey && messageText) {
     const text = messageText.toLowerCase();
