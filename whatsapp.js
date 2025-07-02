@@ -580,8 +580,6 @@ const userSessions = {};
 
 // Message handling logic
 async function handleMessage(input) {
-  const userId = phoneNumber;
-
   const {
     userId,
     phoneNumber,
@@ -636,7 +634,7 @@ async function handleMessage(input) {
     }
   }
 
-  console.log("Handling input:", input);
+  console.log("🔍 Handling input:", input);
 
   // Handle different response types
   try {
@@ -749,6 +747,13 @@ async function handleMessage(input) {
         if (!userSessions[userId].preferredTopics.includes(responseKey)) {
           userSessions[userId].preferredTopics.push(responseKey);
         }
+        const response = detailedResponses[responseKey];
+        await sendWhatsAppMessage(
+          userId,
+          typeof response === "string" ? formatTextMessage(response) : response
+        );
+        setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 2000);
+        break;
 
       default:
         if (detailedResponses[responseKey]) {
