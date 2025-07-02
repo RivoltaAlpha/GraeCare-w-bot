@@ -1,270 +1,270 @@
-const express = require('express');
-const axios = require('axios');
+const express = require("express");
+const axios = require("axios");
 const app = express();
 
-// Middleware
 app.use(express.json());
 
-// Your WhatsApp Business API credentials
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
 const WEBHOOK_VERIFY_TOKEN = process.env.WEBHOOK_VERIFY_TOKEN;
 
-// Enhanced message sending function with interactive templates
 async function sendWhatsAppMessage(phoneNumber, messageData) {
   const url = `https://graph.facebook.com/v18.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`;
-  
+
   const data = {
-    messaging_product: 'whatsapp',
+    messaging_product: "whatsapp",
     to: phoneNumber,
-    ...messageData
+    ...messageData,
   };
 
   try {
     await axios.post(url, data, {
       headers: {
-        'Authorization': `Bearer ${WHATSAPP_TOKEN}`,
-        'Content-Type': 'application/json'
-      }
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json",
+      },
     });
-    console.log('Message sent successfully');
+    console.log("Message sent successfully");
   } catch (error) {
-    console.error('Error sending message:', error.response?.data || error.message);
+    console.error(
+      "Error sending message:",
+      error.response?.data || error.message
+    );
   }
 }
 
 // Interactive message templates
 const messageTemplates = {
   welcome: {
-    type: 'interactive',
+    type: "interactive",
     interactive: {
-      type: 'button',
+      type: "button",
       header: {
-        type: 'text',
-        text: '🌿 Welcome to Grae Care'
+        type: "text",
+        text: "🌿 Welcome to Grae Care",
       },
       body: {
         text: `Hi there! I'm Grae, your wellness companion.
 
-I'm here to support you with all things women's health, from natural solutions and product recommendations to everyday wellness tips.
+        I'm here to support you with all things women's health, from natural solutions and product recommendations to everyday wellness tips.
 
-Grae Care is rooted in grace and dedicated to holistic feminine care, using nature-led remedies to meet the real needs of women, just like you.
+        Grae Care is rooted in grace and dedicated to holistic feminine care, using nature-led remedies to meet the real needs of women, just like you.
 
-What would you like to explore today?`
+        What would you like to explore today?`,
       },
       footer: {
-        text: 'Choose an option below 🌸'
+        text: "Choose an option below 🌸",
       },
       action: {
         buttons: [
           {
-            type: 'reply',
+            type: "reply",
             reply: {
-              id: 'health_concerns',
-              title: '🩺 Health Concerns'
-            }
+              id: "health_concerns",
+              title: "🩺 Health Concerns",
+            },
           },
           {
-            type: 'reply',
+            type: "reply",
             reply: {
-              id: 'shop_products',
-              title: '🛍️ Shop Products'
-            }
+              id: "shop_products",
+              title: "🛍️ Shop Products",
+            },
           },
           {
-            type: 'reply',
+            type: "reply",
             reply: {
-              id: 'spa_services',
-              title: '💆‍♀️ Spa Services'
-            }
-          }
-        ]
-      }
-    }
+              id: "spa_services",
+              title: "💆‍♀️ Spa Services",
+            },
+          },
+        ],
+      },
+    },
   },
 
   healthConcerns: {
-    type: 'interactive',
+    type: "interactive",
     interactive: {
-      type: 'list',
+      type: "list",
       header: {
-        type: 'text',
-        text: '🩺 Women\'s Health Support'
+        type: "text",
+        text: "🩺 Women's Health Support",
       },
       body: {
-        text: 'I can guide you through common women\'s health concerns. Select the area you\'d like to explore:'
+        text: "I can guide you through common women's health concerns. Select the area you'd like to explore:",
       },
       footer: {
-        text: 'Tap to select'
+        text: "Tap to select",
       },
       action: {
-        button: 'Health Topics',
+        button: "Health Topics",
         sections: [
           {
-            title: 'Hormonal Health',
+            title: "Hormonal Health",
             rows: [
               {
-                id: 'pcos',
-                title: 'PCOS',
-                description: 'Polycystic Ovary Syndrome support'
+                id: "pcos",
+                title: "PCOS",
+                description: "Polycystic Ovary Syndrome support",
               },
               {
-                id: 'period_pain',
-                title: 'Period Pain',
-                description: 'Menstrual cramps and discomfort'
+                id: "period_pain",
+                title: "Period Pain",
+                description: "Menstrual cramps and discomfort",
               },
               {
-                id: 'hormonal_acne',
-                title: 'Hormonal Acne',
-                description: 'Clear skin solutions'
-              }
-            ]
+                id: "hormonal_acne",
+                title: "Hormonal Acne",
+                description: "Clear skin solutions",
+              },
+            ],
           },
           {
-            title: 'Reproductive Health',
+            title: "Reproductive Health",
             rows: [
               {
-                id: 'fibroids',
-                title: 'Fibroids',
-                description: 'Natural fibroid management'
+                id: "fibroids",
+                title: "Fibroids",
+                description: "Natural fibroid management",
               },
               {
-                id: 'yeast_infection',
-                title: 'Yeast Infections',
-                description: 'Vaginal health support'
+                id: "yeast_infection",
+                title: "Yeast Infections",
+                description: "Vaginal health support",
               },
               {
-                id: 'uti',
-                title: 'UTI Support',
-                description: 'Urinary tract health'
-              }
-            ]
+                id: "uti",
+                title: "UTI Support",
+                description: "Urinary tract health",
+              },
+            ],
           },
           {
-            title: 'General Wellness',
+            title: "General Wellness",
             rows: [
               {
-                id: 'weight_loss',
-                title: 'Weight Management',
-                description: 'Healthy weight loss support'
+                id: "weight_loss",
+                title: "Weight Management",
+                description: "Healthy weight loss support",
               },
               {
-                id: 'vaginal_dryness',
-                title: 'Vaginal Dryness',
-                description: 'Natural lubrication support'
+                id: "vaginal_dryness",
+                title: "Vaginal Dryness",
+                description: "Natural lubrication support",
               },
               {
-                id: 'anaemia',
-                title: 'Anaemia',
-                description: 'Iron deficiency support'
-              }
-            ]
-          }
-        ]
-      }
-    }
+                id: "anaemia",
+                title: "Anaemia",
+                description: "Iron deficiency support",
+              },
+            ],
+          },
+        ],
+      },
+    },
   },
 
   shopProducts: {
-    type: 'interactive',
+    type: "interactive",
     interactive: {
-      type: 'button',
+      type: "button",
       header: {
-        type: 'text',
-        text: '🛍️ Shop Natural Products'
+        type: "text",
+        text: "🛍️ Shop Natural Products",
       },
       body: {
         text: `Explore our natural, thoughtfully formulated products designed to work in harmony with your body.
 
-Our products feature:
-✨ Natural, organic, GMO-free ingredients
-✨ Holistic approach to women's health
-✨ Personalized guidance and education
+            Our products feature:
+            ✨ Natural, organic, GMO-free ingredients
+            ✨ Holistic approach to women's health
+            ✨ Personalized guidance and education
 
-What type of products are you interested in?`
+            What type of products are you interested in?`,
       },
       footer: {
-        text: 'Select a category'
+        text: "Select a category",
       },
       action: {
         buttons: [
           {
-            type: 'reply',
+            type: "reply",
             reply: {
-              id: 'supplement_products',
-              title: '💊 Supplements'
-            }
+              id: "supplement_products",
+              title: "💊 Supplements",
+            },
           },
           {
-            type: 'reply',
+            type: "reply",
             reply: {
-              id: 'specialized_kits',
-              title: '📦 Health Kits'
-            }
+              id: "specialized_kits",
+              title: "📦 Health Kits",
+            },
           },
           {
-            type: 'reply',
+            type: "reply",
             reply: {
-              id: 'order_info',
-              title: '📋 How to Order'
-            }
-          }
-        ]
-      }
-    }
+              id: "order_info",
+              title: "📋 How to Order",
+            },
+          },
+        ],
+      },
+    },
   },
 
   spaServices: {
-    type: 'interactive',
+    type: "interactive",
     interactive: {
-      type: 'button',
+      type: "button",
       header: {
-        type: 'text',
-        text: '💆‍♀️ GraeCare Spa'
+        type: "text",
+        text: "💆‍♀️ GraeCare Spa",
       },
       body: {
         text: `Welcome to the GraeCare Spa! 🌸
 
-A calm, supportive space designed for your full-body wellness. We offer natural, restorative treatments in a safe and serene environment.
+            A calm, supportive space designed for your full-body wellness. We offer natural, restorative treatments in a safe and serene environment.
 
-Every visit starts with a one-on-one consultation, tailored to your body and needs.`
+            Every visit starts with a one-on-one consultation, tailored to your body and needs.`,
       },
       footer: {
-        text: 'What interests you?'
+        text: "What interests you?",
       },
       action: {
         buttons: [
           {
-            type: 'reply',
+            type: "reply",
             reply: {
-              id: 'spa_treatments',
-              title: '🌿 View Treatments'
-            }
+              id: "spa_treatments",
+              title: "🌿 View Treatments",
+            },
           },
           {
-            type: 'reply',
+            type: "reply",
             reply: {
-              id: 'book_spa',
-              title: '📅 Book Session'
-            }
+              id: "book_spa",
+              title: "📅 Book Session",
+            },
           },
           {
-            type: 'reply',
+            type: "reply",
             reply: {
-              id: 'contact_spa',
-              title: '📞 Contact Us'
-            }
-          }
-        ]
-      }
-    }
-  }
+              id: "contact_spa",
+              title: "📞 Contact Us",
+            },
+          },
+        ],
+      },
+    },
+  },
 };
 
 // Detailed responses for specific topics
 const detailedResponses = {
   pcos: {
-    type: 'text',
+    type: "text",
     text: `🌿 *PCOS Support*
 
 PCOS is caused by a hormonal imbalance, often involving elevated androgens and insulin resistance.
@@ -286,11 +286,11 @@ PCOS is caused by a hormonal imbalance, often involving elevated androgens and i
 🔗 https://graecare.com/product/inflammatory-pcos-kit/
 
 📋 *Take our PCOS Quiz for a more customized solution:*
-🔗 https://graecare.com/pcos-quiz-form/`
+🔗 https://graecare.com/pcos-quiz-form/`,
   },
 
   yeast_infection: {
-    type: 'text',
+    type: "text",
     text: `🌿 *Yeast Infection Support*
 
 Yeast infections are often caused by imbalances in your vaginal flora, when the natural pH shifts or candida overgrows.
@@ -316,11 +316,11 @@ Yeast infections are often caused by imbalances in your vaginal flora, when the 
 🔸 *Yeast Infection Bundle* - KShs 4,200
 🔗 https://graecare.com/product/yeast-infection-fighting-kit/
 
-Let me know if you'd like guidance on how to use them! 💚`
+Let me know if you'd like guidance on how to use them! 💚`,
   },
 
   period_pain: {
-    type: 'text',
+    type: "text",
     text: `🌿 *Period Pain Relief*
 
 Menstrual pain is often caused by an overproduction of prostaglandins, hormone-like compounds that trigger uterine cramps and inflammation.
@@ -340,11 +340,11 @@ Menstrual pain is often caused by an overproduction of prostaglandins, hormone-l
 🔗 https://graecare.com/product/black-cohosh-capsules/
 ✨ Effectively manages menstrual cramps and helps with ovulation
 
-Both are gentle, natural solutions that work with your body's rhythms 🌸`
+Both are gentle, natural solutions that work with your body's rhythms 🌸`,
   },
 
   hormonal_acne: {
-    type: 'text',
+    type: "text",
     text: `🌿 *Clear Skin Solutions*
 
 Good skin brings confidence! There are natural supplements that can give you that healthy glow.
@@ -360,11 +360,11 @@ Good skin brings confidence! There are natural supplements that can give you tha
 🌿 *Chlorophyll Capsules* - Natural detoxifier for skin health
 🔗 https://graecare.com/product/chlorophyll-capsules/
 
-Remember, individual results may vary. It's always good to consult with a healthcare professional for persistent skin concerns 💚`
+Remember, individual results may vary. It's always good to consult with a healthcare professional for persistent skin concerns 💚`,
   },
 
   fibroids: {
-    type: 'text',
+    type: "text",
     text: `🌿 *Fibroid Support*
 
 Fibroids are non-cancerous growths that develop in or around the uterus, often during a woman's reproductive years. They can cause heavy periods, pelvic pain, bloating, and sometimes fertility issues.
@@ -380,11 +380,11 @@ Red clover is a naturally occurring plant used for:
 • Supporting PMS symptoms
 • Purifying blood and improving circulation
 
-Many women find relief with consistent natural support 💚`
+Many women find relief with consistent natural support 💚`,
   },
 
   uti: {
-    type: 'text',
+    type: "text",
     text: `🌿 *UTI Support*
 
 A Urinary Tract Infection (UTI) is an infection in any part of the urinary system—most commonly the bladder and urethra.
@@ -405,11 +405,11 @@ This combines probiotics and cranberry in a single capsule, ideal for:
 • Maintaining vaginal health  
 • Helping prevent recurring UTIs
 
-UTIs are more common in women due to shorter urethra, but natural support can help! 💚`
+UTIs are more common in women due to shorter urethra, but natural support can help! 💚`,
   },
 
   weight_loss: {
-    type: 'text',
+    type: "text",
     text: `🌿 *Healthy Weight Management*
 
 At Grae Care, we support healthy weight loss. Our supplements are not a quick shortcut - they help you lose weight naturally and healthily. Best results come with a healthy diet, exercise, and lifestyle changes.
@@ -428,11 +428,11 @@ At Grae Care, we support healthy weight loss. Our supplements are not a quick sh
 🍵 *Matcha Tea*
 🔗 https://graecare.com/product/matcha-tea/
 
-Remember: sustainable weight loss is a journey, not a destination! 💚`
+Remember: sustainable weight loss is a journey, not a destination! 💚`,
   },
 
   vaginal_dryness: {
-    type: 'text',
+    type: "text",
     text: `🌿 *Vaginal Dryness Support*
 
 Many women experience vaginal dryness due to hormonal changes, stress, medications, or other factors. There are natural ways to support your body's balance.
@@ -453,11 +453,11 @@ Ashwagandha helps:
 • Enhance libido
 • Provide anti-inflammatory benefits
 
-Always consult with a healthcare professional if you have underlying conditions 💚`
+Always consult with a healthcare professional if you have underlying conditions 💚`,
   },
 
   anaemia: {
-    type: 'text',
+    type: "text",
     text: `🌿 *Anaemia Support*
 
 Anaemia is common in women and can leave you feeling tired and lacking energy.
@@ -473,11 +473,11 @@ Sea moss is rich in iron, which helps:
 • Leave you feeling more energetic
 • Support overall vitality
 
-Iron deficiency is especially common during menstruation, so natural support can make a real difference! 💚`
+Iron deficiency is especially common during menstruation, so natural support can make a real difference! 💚`,
   },
 
   spa_treatments: {
-    type: 'text',
+    type: "text",
     text: `💆‍♀️ *GraeCare Spa Treatments*
 
 We offer natural, restorative treatments in a safe and serene environment:
@@ -493,11 +493,11 @@ Targeting key pressure points in your feet, hands, head, and neck to support inn
 
 ✨ Every visit starts with a one-on-one consultation, so we tailor each treatment to your body and needs.
 
-We prioritize hygiene, comfort, and leaving you feeling truly renewed 🌸`
+We prioritize hygiene, comfort, and leaving you feeling truly renewed 🌸`,
   },
 
   order_info: {
-    type: 'text',
+    type: "text",
     text: `📋 *How to Place Your Order*
 
 *Easy ordering process:*
@@ -516,11 +516,11 @@ We prioritize hygiene, comfort, and leaving you feeling truly renewed 🌸`
 📞 Call us: 0712 345 678
 📧 Email: info@graecare.com
 
-We're always happy to assist you! 💚`
+We're always happy to assist you! 💚`,
   },
 
   contact_info: {
-    type: 'text',
+    type: "text",
     text: `📞 *Contact GraeCare*
 
 We'd love to hear from you! Have a question or need help?
@@ -535,44 +535,44 @@ We'd love to hear from you! Have a question or need help?
 • Spa bookings
 • General wellness questions
 
-We're always happy to chat and assist you! 💚`
-  }
+We're always happy to chat and assist you! 💚`,
+  },
 };
 
 // Back to menu option
 const backToMenuOption = {
-  type: 'interactive',
+  type: "interactive",
   interactive: {
-    type: 'button',
+    type: "button",
     body: {
-      text: 'Would you like to explore something else?'
+      text: "Would you like to explore something else?",
     },
     action: {
       buttons: [
         {
-          type: 'reply',
+          type: "reply",
           reply: {
-            id: 'main_menu',
-            title: '🏠 Main Menu'
-          }
+            id: "main_menu",
+            title: "🏠 Main Menu",
+          },
         },
         {
-          type: 'reply',
+          type: "reply",
           reply: {
-            id: 'contact_info',
-            title: '📞 Contact Us'
-          }
+            id: "contact_info",
+            title: "📞 Contact Us",
+          },
         },
         {
-          type: 'reply',
+          type: "reply",
           reply: {
-            id: 'order_info',
-            title: '🛒 How to Order'
-          }
-        }
-      ]
-    }
-  }
+            id: "order_info",
+            title: "🛒 How to Order",
+          },
+        },
+      ],
+    },
+  },
 };
 
 // User state management
@@ -581,139 +581,187 @@ const userSessions = {};
 // Message handling logic
 async function handleMessage(phoneNumber, messageText, buttonId = null) {
   const userId = phoneNumber;
-  
+
   // Initialize user session
   if (!userSessions[userId]) {
-    userSessions[userId] = { 
-      messageCount: 0, 
+    userSessions[userId] = {
+      messageCount: 0,
       preferredTopics: [],
-      lastInteraction: Date.now()
+      lastInteraction: Date.now(),
+      lastMessageId: null,
     };
   }
-  
+
   userSessions[userId].messageCount++;
   userSessions[userId].lastInteraction = Date.now();
 
   // Determine response based on button ID or message text
-  let responseKey = buttonId;
-  
-  if (!responseKey) {
+  let responseKey = buttonId
+    ? buttonId.toLowerCase().replace(/[-\s]/g, "_")
+    : null;
+
+  if (!responseKey && messageText) {
     const text = messageText.toLowerCase();
-    if (text.includes('hi') || text.includes('hello') || text.includes('hey') || text.includes('start')) {
-      responseKey = 'welcome';
-    } else if (text.includes('menu') || text.includes('help') || text.includes('options')) {
-      responseKey = 'main_menu';
+    if (
+      text.includes("hi") ||
+      text.includes("hello") ||
+      text.includes("hey") ||
+      text.includes("start")
+    ) {
+      responseKey = "welcome";
+    } else if (
+      text.includes("menu") ||
+      text.includes("help") ||
+      text.includes("options")
+    ) {
+      responseKey = "main_menu";
     } else {
-      responseKey = 'welcome'; // Default for new users
+      responseKey = "welcome";
     }
   }
 
+  console.log("🔍 Handling input:", {
+    phoneNumber,
+    messageText,
+    buttonId,
+    normalizedKey: responseKey,
+  });
+
   // Handle different response types
-  switch (responseKey) {
-    case 'welcome':
-    case 'main_menu':
-      await sendWhatsAppMessage(userId, messageTemplates.welcome);
-      break;
-      
-    case 'health_concerns':
-      await sendWhatsAppMessage(userId, messageTemplates.healthConcerns);
-      break;
-      
-    case 'shop_products':
-      await sendWhatsAppMessage(userId, messageTemplates.shopProducts);
-      break;
-      
-    case 'spa_services':
-      await sendWhatsAppMessage(userId, messageTemplates.spaServices);
-      break;
-      
-    case 'spa_treatments':
-      await sendWhatsAppMessage(userId, detailedResponses.spa_treatments);
-      setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
-      break;
-      
-    case 'book_spa':
-      await sendWhatsAppMessage(userId, {
-        type: 'text',
-        text: `🌸 *Ready to book your spa session?*\n\nVisit our spa booking page:\n🔗 https://graecare.com/grae-care-spa/\n\nOr call us directly at 📞 0712 345 678\n\nWe'll help you choose the perfect treatment for your needs! 💚`
-      });
-      setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
-      break;
-      
-    case 'contact_spa':
-    case 'contact_info':
-      await sendWhatsAppMessage(userId, detailedResponses.contact_info);
-      setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
-      break;
-      
-    // Health topic responses
-    case 'pcos':
-    case 'period_pain':
-    case 'hormonal_acne':
-    case 'fibroids':
-    case 'yeast_infection':
-    case 'uti':
-    case 'weight_loss':
-    case 'vaginal_dryness':
-    case 'anaemia':
-      // Track user interests
-      if (!userSessions[userId].preferredTopics.includes(responseKey)) {
-        userSessions[userId].preferredTopics.push(responseKey);
-      }
-      
-      await sendWhatsAppMessage(userId, detailedResponses[responseKey]);
-      setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 2000);
-      break;
-      
-    case 'order_info':
-      await sendWhatsAppMessage(userId, detailedResponses.order_info);
-      setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
-      break;
-      
-    case 'supplement_products':
-      await sendWhatsAppMessage(userId, {
-        type: 'text',
-        text: `💊 *Natural Supplements*\n\nExplore our range of carefully curated supplements:\n\n🔗 https://graecare.com/shop/\n\n*Popular supplements include:*\n• Sea Moss - for energy and skin health\n• Ashwagandha - for stress and hormones\n• Magnesium - for cramps and sleep\n• Red Clover - for reproductive health\n\nAll natural, organic, and GMO-free! 🌿`
-      });
-      setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
-      break;
-      
-    case 'specialized_kits':
-      await sendWhatsAppMessage(userId, {
-        type: 'text',
-        text: `📦 *Specialized Health Kits*\n\n*PCOS Support Kits:*\n• Insulin Resistance PCOS Kit - KShs 8,400\n• Adrenal PCOS Kit - KShs 6,100\n• Inflammatory PCOS Kit - KShs 6,750\n\n*Other Kits:*\n• Yeast Infection Bundle - KShs 4,200\n\nEach kit is specially formulated for targeted support 🎯\n\n🔗 Browse all: https://graecare.com/shop/`
-      });
-      setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
-      break;
-      
-    default:
-      await sendWhatsAppMessage(userId, messageTemplates.welcome);
+  try {
+    switch (responseKey) {
+      case "welcome":
+      case "main_menu":
+        await sendWhatsAppMessage(userId, messageTemplates.welcome);
+        break;
+
+      case "health_concerns":
+        await sendWhatsAppMessage(userId, messageTemplates.healthConcerns);
+        break;
+
+      case "shop_products":
+        await sendWhatsAppMessage(userId, messageTemplates.shopProducts);
+        break;
+
+      case "spa_services":
+        await sendWhatsAppMessage(userId, messageTemplates.spaServices);
+        break;
+
+      case "spa_treatments":
+        await sendWhatsAppMessage(userId, detailedResponses.spa_treatments);
+        setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
+        break;
+
+      case "book_spa":
+        await sendWhatsAppMessage(userId, {
+          type: "text",
+          text: `🌸 *Ready to book your spa session?*\n\nVisit our spa booking page:\n🔗 https://graecare.com/grae-care-spa/\n\nOr call us directly at 📞 0712 345 678\n\nWe'll help you choose the perfect treatment for your needs! 💚`,
+        });
+        setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
+        break;
+
+      case "contact_spa":
+        await sendWhatsAppMessage(userId, {
+          type: "text",
+          text: `📞 *Contact GraeCare Spa*\n\nFor any spa-related inquiries, please call us at:\n📞 0712 345 678\n\nWe're here to help you with bookings, treatments, and any questions you may have! 💚`,
+        });
+        setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
+        break;
+
+      case "contact_info":
+        await sendWhatsAppMessage(userId, detailedResponses.contact_info);
+        setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
+        break;
+
+      case "order_info":
+        await sendWhatsAppMessage(userId, detailedResponses.order_info);
+        setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
+        break;
+
+      case "supplement_products":
+        await sendWhatsAppMessage(userId, {
+          type: "text",
+          text: `💊 *Natural Supplements*\n\nExplore our range of carefully curated supplements:\n\n🔗 https://graecare.com/shop/\n\n*Popular supplements include:*\n• Sea Moss - for energy and skin health\n• Ashwagandha - for stress and hormones\n• Magnesium - for cramps and sleep\n• Red Clover - for reproductive health\n\nAll natural, organic, and GMO-free! 🌿`,
+        });
+        setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
+        break;
+
+      case "specialized_kits":
+        await sendWhatsAppMessage(userId, {
+          type: "text",
+          text: `📦 *Specialized Health Kits*\n\n*PCOS Support Kits:*\n• Insulin Resistance PCOS Kit - KShs 8,400\n• Adrenal PCOS Kit - KShs 6,100\n• Inflammatory PCOS Kit - KShs 6,750\n\n*Other Kits:*\n• Yeast Infection Bundle - KShs 4,200\n\nEach kit is specially formulated for targeted support 🎯\n\n🔗 Browse all: https://graecare.com/shop/`,
+        });
+        setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
+        break;
+
+      case "pcos":
+      case "period_pain":
+      case "hormonal_acne":
+      case "fibroids":
+      case "yeast_infection":
+      case "uti":
+      case "weight_loss":
+      case "vaginal_dryness":
+      case "anaemia":
+        if (!userSessions[userId].preferredTopics.includes(responseKey)) {
+          userSessions[userId].preferredTopics.push(responseKey);
+        }
+
+        if (detailedResponses[responseKey]) {
+          await sendWhatsAppMessage(userId, detailedResponses[responseKey]);
+          setTimeout(() => {
+            sendWhatsAppMessage(userId, backToMenuOption).catch(console.error);
+          }, 2000);
+        } else {
+          console.warn(`⚠️ Missing detailed response for key: ${responseKey}`);
+          await sendWhatsAppMessage(userId, {
+            type: "text",
+            text: `Oops, I'm still learning about *${responseKey}*. Please try another option or type *menu*.`,
+          });
+        }
+        break;
+
+      default:
+        await sendWhatsAppMessage(userId, {
+          type: "text",
+          text: `🤖 Sorry, I didn't understand that. Please choose an option from the menu or type *menu* to begin.`,
+        });
+        setTimeout(() => {
+          sendWhatsAppMessage(userId, backToMenuOption).catch(console.error);
+        }, 1000);
+    }
+  } catch (error) {
+    console.error("❌ Error in handleMessage:", error);
+    await sendWhatsAppMessage(userId, {
+      type: "text",
+      text: "Oops! Something went wrong. Please try again later 🌿",
+    });
   }
 }
 
 // Webhook verification
-app.get('/webhook', (req, res) => {
-  const mode = req.query['hub.mode'];
-  const token = req.query['hub.verify_token'];
-  const challenge = req.query['hub.challenge'];
+app.get("/webhook", (req, res) => {
+  const mode = req.query["hub.mode"];
+  const token = req.query["hub.verify_token"];
+  const challenge = req.query["hub.challenge"];
 
-  if (mode === 'subscribe' && token === WEBHOOK_VERIFY_TOKEN) {
-    console.log('Webhook verified successfully!');
+  if (mode === "subscribe" && token === WEBHOOK_VERIFY_TOKEN) {
+    console.log("Webhook verified successfully!");
     res.status(200).send(challenge);
   } else {
-    res.status(403).send('Verification failed');
+    res.status(403).send("Verification failed");
   }
 });
 
 // Webhook for receiving messages
-app.post('/webhook', async (req, res) => {
+app.post("/webhook", async (req, res) => {
   try {
     const body = req.body;
 
-    if (body.object === 'whatsapp_business_account') {
-      body.entry.forEach(entry => {
-        entry.changes.forEach(change => {
-          if (change.field === 'messages') {
+    if (body.object === "whatsapp_business_account") {
+      body.entry.forEach((entry) => {
+        entry.changes.forEach((change) => {
+          if (change.field === "messages") {
             const messages = change.value.messages;
             if (messages) {
               messages.forEach(async (message) => {
@@ -731,22 +779,26 @@ app.post('/webhook', async (req, res) => {
 
                 // Handle text messages
                 if (message.text?.body) {
-                  console.log(`Received text from ${phoneNumber}: ${message.text.body}`);
+                  console.log(
+                    `Received text from ${phoneNumber}: ${message.text.body}`
+                  );
                   await handleMessage(phoneNumber, message.text.body);
                 }
 
                 // Handle interactive message responses (button clicks)
                 if (message.interactive) {
                   let buttonId;
-                  if (message.interactive.type === 'button_reply') {
+                  if (message.interactive.type === "button_reply") {
                     buttonId = message.interactive.button_reply.id;
-                  } else if (message.interactive.type === 'list_reply') {
+                  } else if (message.interactive.type === "list_reply") {
                     buttonId = message.interactive.list_reply.id;
                   }
-                  
+
                   if (buttonId) {
-                    console.log(`Received button click from ${phoneNumber}: ${buttonId}`);
-                    await handleMessage(phoneNumber, '', buttonId);
+                    console.log(
+                      `Received button click from ${phoneNumber}: ${buttonId}`
+                    );
+                    await handleMessage(phoneNumber, "", buttonId);
                   }
                 }
               });
@@ -756,21 +808,25 @@ app.post('/webhook', async (req, res) => {
       });
     }
 
-    res.status(200).send('OK');
+    res.status(200).send("OK");
   } catch (error) {
-    console.error('Webhook error:', error);
-    res.status(500).send('Internal Server Error');
+    console.error("Webhook error:", error);
+    res.status(500).send("Internal Server Error");
   }
 });
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', message: 'Grae Care WhatsApp Bot is running' });
+app.get("/health", (req, res) => {
+  res
+    .status(200)
+    .json({ status: "OK", message: "Grae Care WhatsApp Bot is running" });
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Grae Care WhatsApp webhook with interactive messages is listening on port ${PORT}`);
+  console.log(
+    `Grae Care WhatsApp webhook with interactive messages is listening on port ${PORT}`
+  );
 });
 
 module.exports = app;
