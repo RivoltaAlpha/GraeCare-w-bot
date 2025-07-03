@@ -829,7 +829,13 @@ app.post("/webhook", async (req, res) => {
                   console.log(
                     `Received text from ${phoneNumber}: ${message.text.body}`
                   );
-                  await handleMessage(phoneNumber, message.text.body);
+                  await handleMessage({
+                    userId: phoneNumber,
+                    phoneNumber: phoneNumber,
+                    messageText: message.text.body,
+                    buttonId: null,
+                    normalizedKey: null
+                  });
                 }
 
                 // Handle interactive message responses (button clicks)
@@ -845,7 +851,13 @@ app.post("/webhook", async (req, res) => {
                     console.log(
                       `Received button click from ${phoneNumber}: ${buttonId}`
                     );
-                    await handleMessage(phoneNumber, "", buttonId);
+                    await handleMessage({
+                      userId: phoneNumber,
+                      phoneNumber: phoneNumber,
+                      messageText: "",
+                      buttonId: buttonId,
+                      normalizedKey: null
+                    });
                   }
                 }
               });
