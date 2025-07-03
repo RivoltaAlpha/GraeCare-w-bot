@@ -4,9 +4,21 @@ const app = express();
 
 app.use(express.json());
 
+// Add this after app.use(express.json());
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
+});
+
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
 const WEBHOOK_VERIFY_TOKEN = process.env.WEBHOOK_VERIFY_TOKEN;
+
+// Add this after the environment variable declarations
+if (!WHATSAPP_TOKEN || !WHATSAPP_PHONE_NUMBER_ID || !WEBHOOK_VERIFY_TOKEN) {
+  console.error("Missing required environment variables");
+  process.exit(1);
+}
 
 async function sendWhatsAppMessage(phoneNumber, messageData) {
   const url = `https://graph.facebook.com/v18.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`;
@@ -585,7 +597,7 @@ async function handleMessage(input) {
     phoneNumber,
     messageText,
     buttonId,
-    normalizedKey: responseKey,
+    normalizedKey,
   } = input;
 
   // Helper to ensure correct WhatsApp API message format
@@ -608,6 +620,8 @@ async function handleMessage(input) {
 
   userSessions[userId].messageCount++;
   userSessions[userId].lastInteraction = Date.now();
+
+  let responseKey = normalizedKey || null;
 
   // Determine response based on button ID or message text
   if (buttonId) {
