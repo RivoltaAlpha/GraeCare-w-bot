@@ -675,9 +675,7 @@ async function handleMessage(input) {
           const response = detailedResponses.spa_treatments;
           await sendWhatsAppMessage(
             userId,
-            typeof response === "string"
-              ? formatTextMessage(response)
-              : response
+            formatTextMessage(response.text)
           );
           setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
         }
@@ -708,9 +706,7 @@ async function handleMessage(input) {
           const response = detailedResponses.contact_info;
           await sendWhatsAppMessage(
             userId,
-            typeof response === "string"
-              ? formatTextMessage(response)
-              : response
+              formatTextMessage(response.text)
           );
         }
         setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
@@ -721,9 +717,7 @@ async function handleMessage(input) {
           const response = detailedResponses.order_info;
           await sendWhatsAppMessage(
             userId,
-            typeof response === "string"
-              ? formatTextMessage(response)
-              : response
+              formatTextMessage(response.text)
           );
         }
         setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 1000);
@@ -764,7 +758,7 @@ async function handleMessage(input) {
         const response = detailedResponses[responseKey];
         await sendWhatsAppMessage(
           userId,
-          typeof response === "string" ? formatTextMessage(response) : response
+          formatTextMessage(response.text)
         );
         setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 2000);
         break;
@@ -774,9 +768,7 @@ async function handleMessage(input) {
           const response = detailedResponses[responseKey];
           await sendWhatsAppMessage(
             userId,
-            typeof response === "string"
-              ? formatTextMessage(response)
-              : response
+            formatTextMessage(response.text)
           );
           setTimeout(() => sendWhatsAppMessage(userId, backToMenuOption), 2000);
         } else {
